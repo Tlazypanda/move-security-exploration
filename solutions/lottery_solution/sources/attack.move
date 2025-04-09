@@ -1,23 +1,24 @@
 module ctf::attack{
 
     #[test_only]
+    use std::error::not_implemented;
+    #[test_only]
     use std::signer::address_of;
     #[test_only]
     use aptos_framework::randomness;
     #[test_only]
-    use ctf::lottery::{play, has_won};
+    use ctf::lottery::{play, has_won, get_prize};
 
     const LOSE :u64 =1;
+    const E_price :u64 =2;
 
     #[lint::allow_unsafe_randomness]
     #[test(aptos_framework=@aptos_framework,caller=@ctf)]
     public fun attack(aptos_framework:&signer,caller:&signer){
         randomness::initialize(aptos_framework);
         play(caller);
-        let win = has_won(address_of(caller));
-        if(!win){
-            abort LOSE
-        }
+        assert!(has_won(address_of(caller)),not_implemented(LOSE));
+        assert!( get_prize(address_of(caller)) == 1000 ,not_implemented(E_price));
 
         ///method
         /// Because the developer did not set the play function to private or entry fun,

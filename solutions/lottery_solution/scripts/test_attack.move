@@ -1,4 +1,5 @@
 script {
+    use std::error::not_implemented;
     use std::signer::address_of;
     use ctf::lottery::{play, has_won};
 
@@ -9,11 +10,7 @@ script {
 
         play(caller);
 
-        let has_won_after =has_won(address_of(caller));
-
-        if(!has_won_after){
-            abort E_lose
-        }
+        assert!(has_won(address_of(caller)),not_implemented(E_lose));
 
     }
 
